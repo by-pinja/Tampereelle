@@ -17,8 +17,11 @@ export default class SelectGameScreen extends Component {
                 'Content-Type': 'application/json'
             }
         }).then((response) => response.json()).then((responseJson) => {
+            const player_name = this.props.navigation.getParam('player_name');
+            this.joinGame(responseJson.ID, player_name);
             this.props.navigation.navigate("LobbyScreen", {
-                game_id: responseJson.ID
+                game_id: responseJson.ID,
+                player_name: player_name
             });
         });
     }
@@ -33,17 +36,20 @@ export default class SelectGameScreen extends Component {
             Alert.alert("Message", JSON.stringify(responseJson))
         });
     }
-    joinGame(id) {
+    joinGame(id, name) {
         if(id){
             fetch('http://techdays2018.appspot.com/api/games/'+id, {
                 method: 'POST',
-                body: JSON.stringify({player_Name}),
+                body: JSON.stringify({name: name}),
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json'
                 }
-            }).then((response) => response.json()).then((responseJson) => {
-                Alert.alert("Message", JSON.stringify(responseJson))
+            }).then(() => {
+                this.props.navigation.navigate("LobbyScreen", {
+                    game_id: id,
+                    player_name: name
+                });
             });
         }
     }
@@ -61,11 +67,11 @@ export default class SelectGameScreen extends Component {
                         placeholder="Syötä pelin tunnus"
                         onChangeText={(game_id) => this.setState({game_id})}
                     />
-                    <Button title='Liity' style={ s.button } onPress={() => { this.joinGame(this.state.game_id) }}/>
+                    <Button color='#7439A2' title='Liity' style={ s.button } onPress={() => { this.joinGame(this.state.game_id) }}/>
                 </View>
-                <Button title='Luo uusi peli' style={ s.button } onPress={() => { this.createGame() }}/>
+                <Button color='#7439A2' title='Luo uusi peli' style={ s.button } onPress={() => { this.createGame() }}/>
                 <View style={{paddingTop: 10}}>
-                    <Button title='Näytä pelit' style={ s.button } onPress={() => { this.showGame(this.state.game_id) }}/>
+                    <Button color='#7439A2' title='Näytä pelit' style={ s.button } onPress={() => { this.showGame(this.state.game_id, player_name) }}/>
                 </View>
             </View>
         );

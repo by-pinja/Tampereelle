@@ -10,7 +10,7 @@ export default class LobbyScreen extends Component {
   }
     componentDidMount() {
         const game_id = this.props.navigation.getParam('game_id', "N/A");
-        this.timer = setInterval(()=> this.getGame(game_id), 2000);
+        //this.timer = setInterval(()=> this.getGame(game_id), 2000);
     }
 
     componentWillUnmount() {
@@ -34,6 +34,7 @@ export default class LobbyScreen extends Component {
   }
   startGame(game_id){
       this.setState({starting_game: true});
+      const player_name = this.props.navigation.getParam('player_name', "N/A");
       fetch('https://techdays2018.appspot.com/api/games/'+game_id +'/state', {
           method: 'PUT',
           body: JSON.stringify({
@@ -43,6 +44,11 @@ export default class LobbyScreen extends Component {
               Accept: 'application/json',
               'Content-Type': 'application/json'
           }
+      }).then((response) => {
+          this.props.navigation.navigate("QuestionScreen", {
+              game_id: game_id,
+              player_name: player_name
+          });
       });
   }
   render() {

@@ -8,30 +8,8 @@ export default class UserNameScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            text: '',
-            heading: null
+            player_name: ''
         };
-    }
-    componentWillMount(){
-        this._getLocationAsync();
-    }
-    _getLocationAsync = async () => {
-        // Checking device location permissions
-        let { status } = await Permissions.askAsync(Permissions.LOCATION);
-        if (status !== 'granted') {
-            this.setState({
-                errorMessage: 'Permission to access location was denied',
-            });
-        }
-        else {
-            Expo.Location.watchHeadingAsync((obj) => {
-                let heading = obj.magHeading;
-                this.setState({ heading: heading })
-            })
-        }
-    };
-    componentWillUnmount() {
-        Expo.Location.watchHeadingAsync();
     }
     render() {
         return (
@@ -43,13 +21,13 @@ export default class UserNameScreen extends Component {
                     style={s.text_input}
                     underlineColorAndroid='transparent'
                     placeholder="Syötä pelaajan nimi"
-                    onChangeText={(text) => this.setState({text})}
+                    onChangeText={(player_name) => this.setState({player_name})}
                 />
             </View>
             <Button style={s.button}
                 onPress={() => {
                     this.props.navigation.navigate("SelectGameScreen", {
-                        player_name: this.state.text
+                        player_name: this.state.player_name
                     });
                 }}
                 color='#7439A2'
