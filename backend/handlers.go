@@ -41,7 +41,7 @@ type GameState struct {
 }
 
 type AnswerDto struct {
-	PlayerID uint `json:"state"`
+	PlayerID uint `json:"playerID"`
 	Angle float64 `json:"angle"`
 	Latitude float64 `json:"latitude"`
 	Longitude float64 `json:"longitude"`
@@ -77,12 +77,10 @@ func UpdateGameState(w http.ResponseWriter, r *http.Request) {
 
 func AnswerQuestion(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	gameID, _ := strconv.ParseUint(params["id"], 10, 64)
 	questionID, _ := strconv.ParseUint(params["questionID"], 10, 64)
 	var answer AnswerDto 
 		_ = json.NewDecoder(r.Body).Decode(&answer);
-	database.CreateAnswer(uint(questionID), uint(gameID), answer.Latitude, answer.Longitude, answer.Angle)
-
+	database.CreateAnswer(uint(questionID), answer.PlayerID, answer.Latitude, answer.Longitude, answer.Angle)
 }
 
 func GetNextQuestion(w http.ResponseWriter, r *http.Request) {

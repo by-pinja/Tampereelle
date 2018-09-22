@@ -26,8 +26,8 @@ type Game struct {
 
 type Player struct {
 	gorm.Model
-	Name string
-	GameId uint
+	Name string `json:"name"`
+	GameId uint `json:"gameId"`
 }
 
 type Question struct {
@@ -162,8 +162,8 @@ func CreateAnswer(questionId uint, playerId uint, playerLatitude float64, player
 
 
 type PlayerScore struct {
-	Player Player
-	Score float64
+	Player Player `json:"player"`
+	Score float64 `json:"score"`
 }
 
 func getPlayerScore(question Question, answer Answer) float64 {
@@ -190,11 +190,15 @@ func GetPlayerScores(questionId uint) []PlayerScore {
 		return result
 	}
 
-	for i := 0 ; i < len(question.Game.Players) ; i++ {
-		player := question.Game.Players[i]
+	var game Game
+	db.Model(&question).Related(&game, "GameId").Row()
+	var players []Player
+	db.Model(&game).Related(&players, "Players")
+	for i := 0 ; i < len(players) ; i++ {
+		player := players[i]
 		var answer Answer
 		var playerScore PlayerScore
-		if db.Where(Answer{Player: player}).First(answer).RecordNotFound() {
+		if db.Where(Answer{PlayerId: player.ID}).First(&answer).RecordNotFound() {
 			score := getPlayerScore(question, answer)
 			playerScore = PlayerScore{Player: player, Score: score}
 		} else {
