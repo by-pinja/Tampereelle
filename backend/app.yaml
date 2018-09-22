@@ -1,5 +1,23 @@
 runtime: go
-api_version: go1
+# api_version: go1
+
+env: flex
+
+manual_scaling:
+  instances: 1
+resources:
+  cpu: 1
+  memory_gb: 0.5
+  disk_size_gb: 10
+
+env_variables:
+   DB_HOST: "/cloudsql/techdays2018:europe-north1:tampere"
+   DB_USER: "postgres"
+   DB_PASS: "i5kIfKsPzhgkkGmk"
+   DB_NAME: "tampere"
+
+beta_settings:
+  cloud_sql_instances: "techdays2018:europe-north1:tampere"
 
 handlers:
   - url: /.*
