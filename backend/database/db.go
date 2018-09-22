@@ -7,6 +7,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"os"
 	"math/rand"
+	"math"
 )
 
 type Place struct {
@@ -115,12 +116,11 @@ func NextQuestion(gameId uint) Question {
 	db.First(&game, gameId)
 
 	var question Question
-	db.Where(Question{Game: game, State: "OPEN"}).First(&question)
-	if db.Where(Question{Game: game, State: "OPEN"}).First(&question).RecordNotFound() {
+	db.Where(Question{GameId: game.ID, State: "OPEN"}).First(&question)
+	if db.Where(Question{GameId: game.ID, State: "OPEN"}).First(&question).RecordNotFound() {
 		var places []Place
 		db.Find(&places)
 		place := places[rand.Intn(len(places))]
-
 
 		question = Question{Place: place, Game: game, State: "OPEN"}
 		db.Save(question)
@@ -157,6 +157,51 @@ func CreateAnswer(questionId uint, playerId uint, playerLatitude float64, player
 	}
 }
 
+
+type PlayerScore struct {
+	Player Player
+	Score float64
+}
+
+func getPlayerScore(question Question, answer Answer) float64 {
+	dLat := question.Place.Latitude - answer.PlayerLatitude
+	dLon := question.Place.Longitude - answer.PlayerLongitude
+	targetAngle := math.Atan(dLat/dLon)
+	return math.Abs(targetAngle - answer.Angle)
+}
+
+
+func GetPlayerScores(questionId uint) []PlayerScore {
+	db := getConnection()
+	defer db.Close()
+
+	var question Question
+
+	if db.First(&question, questionId).RecordNotFound() {
+		panic("No such question")
+	}
+
+	var result []PlayerScore
+
+	if question.State == "OPEN" {
+		return result
+	}
+
+	for i := 0 ; i < len(question.Game.Players) ; i++ {
+		player := question.Game.Players[i]
+		var answer Answer
+		var playerScore PlayerScore
+		if db.Where(Answer{Player: player}).First(answer).RecordNotFound() {
+			score := getPlayerScore(question, answer)
+			playerScore = PlayerScore{Player: player, Score: score}
+		} else {
+			playerScore = PlayerScore{Player: player, Score: 99999}
+		}
+		result = append(result, playerScore)
+	}
+
+	return result
+}
 
 
 func Init() {
