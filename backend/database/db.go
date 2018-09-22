@@ -50,7 +50,7 @@ func CreateGame() Game {
 	return game
 }
 
-func GetGame(gameId uint) Game {
+func GetGame(gameId uint64) Game {
 	db := getConnection()
 	var game Game
 	db.First(&game, gameId)
