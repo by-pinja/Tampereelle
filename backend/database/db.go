@@ -8,9 +8,39 @@ import (
 	"os"
 )
 
-type SomeTable struct {
+type Place struct {
 	gorm.Model
-	value 	string
+	Name string
+	Latitude float64
+	Longitude float64
+}
+
+type Game struct {
+	gorm.Model
+	State string
+	Players []Player
+	Questions []Question
+}
+
+type Player struct {
+	gorm.Model
+	Name string
+}
+
+type Question struct {
+	gorm.Model
+	Place Place
+	State string
+	Answers []Answer
+}
+
+type Answer struct {
+	gorm.Model
+	Player Player
+	Question Question
+	Angle float64
+	PlayerLatitude float64
+	PlayerLongitude float64
 }
 
 
@@ -18,7 +48,7 @@ func Init() {
 	var db = getConnection()
 	defer db.Close()
 
-	db.CreateTable(&SomeTable{})
+	db.AutoMigrate(&Place{}, &Player{}, &Question{}, &Answer{})
 }
 
 func getConnection() *gorm.DB {
