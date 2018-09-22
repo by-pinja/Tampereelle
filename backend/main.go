@@ -4,7 +4,7 @@ import (
 	"encoding/json"
     "fmt"
     "net/http"
-
+    
 	"google.golang.org/appengine"
 )
 
@@ -26,6 +26,6 @@ func Index(w http.ResponseWriter, r *http.Request) {
 
 func TodoIndex(w http.ResponseWriter, r *http.Request) {
 	test := Test{Name: "Test"}
-	json.NewEncoder(w).Encode(test);
+	json.NewEncoder(w).Encode(test)
 }
 
