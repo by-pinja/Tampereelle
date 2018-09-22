@@ -12,6 +12,14 @@ type Test struct {
 	Name string
 }
 
+func CreateGame(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func GetGame(w http.ResponseWriter, r *http.Request) {
+
+}
+
 func Index(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "Welcome!")
 }
