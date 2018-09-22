@@ -12,7 +12,7 @@ export default class UserNameScreen extends Component {
       <View style={{padding: 10, backgroundColor: '#FFF', display: 'flex', flex: 1}}>
         <Text style={s.h1}>Tampereelle</Text>
         <View style={{paddingBottom: 10}}>
-            <Text style={s.h2}>Pelaajan nimi:</Text>
+            <Text style={s.h2}>Pelaajan nimi:u</Text>
             <TextInput
                 style={s.text_input}
                 underlineColorAndroid='transparent'
