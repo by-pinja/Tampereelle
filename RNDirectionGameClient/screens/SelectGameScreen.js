@@ -67,7 +67,7 @@ export default class SelectGameScreen extends Component {
                         placeholder="Syötä pelin tunnus"
                         onChangeText={(game_id) => this.setState({game_id})}
                     />
-                    <Button color='#7439A2' title='Liity' style={ s.button } onPress={() => { this.joinGame(this.state.game_id) }}/>
+                    <Button color='#7439A2' title='Liity' style={ s.button } onPress={() => { this.joinGame(this.state.game_id, player_name) }}/>
                 </View>
                 <Button color='#7439A2' title='Luo uusi peli' style={ s.button } onPress={() => { this.createGame() }}/>
                 <View style={{paddingTop: 10}}>
