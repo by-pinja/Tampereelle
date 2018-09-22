@@ -1,3 +1,6 @@
+import React, { Component } from 'react';
+import {StyleSheet, View, FlatList} from 'react-native';
+
 export default class UserList extends Component {
     render() {
         const players = this.props.players;

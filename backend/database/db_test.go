@@ -23,9 +23,9 @@ func TestScoreCalculation1(t *testing.T) {
 
 func TestScoreCalculation2(t *testing.T) {
 	q := question(0, -40.0)
-	a := Answer{PlayerLatitude: 0.0, PlayerLongitude: 0.0, Angle: math.Pi}
+	a := Answer{PlayerLatitude: 0.0, PlayerLongitude: 0.0, Angle: 90}
 	score := getPlayerScore(q, a)
-	if score != 0 {
+	if score != math.Pi / 2 {
 		t.Error(score)
 	}
 }
