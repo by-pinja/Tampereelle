@@ -166,13 +166,38 @@ type PlayerScore struct {
 	Score float64
 }
 
-func getPlayerScore(question Question, answer Answer) float64 {
-	dLat := question.Place.Latitude - answer.PlayerLatitude
-	dLon := question.Place.Longitude - answer.PlayerLongitude
-	targetAngle := math.Atan(dLat/dLon)
-	return math.Abs(targetAngle)
+func dist(dLat float64, dLon float64) float64 {
+	return math.Sqrt(dLat * dLat + dLon * dLon)
 }
 
+func angle(x1 float64, x2 float64, y1 float64, y2 float64) float64 {
+	distX := dist(x1, y1)
+	distY := dist(x2, y2)
+	return math.Acos((x1 * x2 + y1 * y2) / (distX  * distY))
+
+}
+
+func getPlayerScore(question Question, answer Answer) float64 {
+	realDLat := question.Place.Latitude - answer.PlayerLatitude
+	realDLon := question.Place.Longitude - answer.PlayerLongitude
+
+	realAngle := angle(realDLon, 1.0, realDLat, 0)
+	fmt.Println(realAngle)
+
+	ansRotated := answer.Angle + 90
+	if ansRotated > 360 {
+		ansRotated =  ansRotated - 360
+	}
+	ansRotated = 360 - ansRotated
+	ansRad := ((ansRotated) / 360.0) * 2 * math.Pi
+	fmt.Println(answer.Angle)
+	fmt.Println(ansRad)
+
+	ansDLat := math.Sin(ansRad)
+	ansDLon := math.Cos(ansRad)
+
+	return angle(realDLat, ansDLat, realDLon, ansDLon)
+}
 
 func GetPlayerScores(questionId uint) []PlayerScore {
 	db := getConnection()
