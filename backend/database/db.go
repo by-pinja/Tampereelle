@@ -17,8 +17,8 @@ type SomeTable struct {
 }
 
 
-func Init(r *http.Request) {
-	var db = getConnection(r)
+func Init() {
+	var db = getConnection()
 	defer db.Close()
 
 	db.CreateTable(&SomeTable{})
@@ -47,11 +47,9 @@ func getConnection(r *http.Request) *gorm.DB {
 			db_name,
 			db_password)
 	}
-	ctx := appengine.NewContext(r)
 
 	db, err := gorm.Open("postgres", params)
 	if err != nil {
-		log.Errorf(ctx, "Error opening db connection", err)
 	}
 	return db
 }
