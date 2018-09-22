@@ -66,6 +66,9 @@ func GetGame(gameId uint64) Game {
 
 	var game Game
 	db.First(&game, gameId)
+	var players []Player;
+	db.Model(&game).Related(&players, "Players").Rows()
+	game.Players = players
 	return game
 }
 
