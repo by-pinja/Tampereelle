@@ -81,7 +81,6 @@ func AnswerQuestion(w http.ResponseWriter, r *http.Request) {
 	var answer AnswerDto 
 		_ = json.NewDecoder(r.Body).Decode(&answer);
 	database.CreateAnswer(uint(questionID), answer.PlayerID, answer.Latitude, answer.Longitude, answer.Angle)
-
 }
 
 func GetNextQuestion(w http.ResponseWriter, r *http.Request) {
