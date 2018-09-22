@@ -1,12 +1,15 @@
 package main
 
 import (
+	"Tampereelle/backend/database"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"time"
-	"Tampereelle/backend/database"
+
+	"github.com/gorilla/mux"
 )
 
 type Test struct {
@@ -14,13 +17,19 @@ type Test struct {
 }
 
 func CreateGame(w http.ResponseWriter, r *http.Request) {
-	game := database.CreateGame();
+	game := database.CreateGame()
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(game)
 }
 
 func GetGame(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	id, _ := strconv.ParseUint(params["id"], 10, 64)
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+	game := database.GetGame(id)
+	json.NewEncoder(w).Encode(game)
 
 }
 
