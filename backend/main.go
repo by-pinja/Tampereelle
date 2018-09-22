@@ -5,7 +5,6 @@ import (
     "fmt"
     "log"
     "net/http"
-
     "github.com/gorilla/mux"
 )
 
@@ -28,6 +27,6 @@ func Index(w http.ResponseWriter, r *http.Request) {
 
 func TodoIndex(w http.ResponseWriter, r *http.Request) {
 	test := Test{Name: "Test"}
-	json.NewEncoder(w).Encode(test);
+	json.NewEncoder(w).Encode(test)
 }
 
