@@ -23,7 +23,7 @@ var routes = Routes{
 	Route{
 		"TodoIndex",
 		"GET",
-		"/",
+		"/test",
 		TodoIndex,
 	},
 	Route{

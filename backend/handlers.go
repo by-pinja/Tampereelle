@@ -13,7 +13,7 @@ type Test struct {
 }
 
 func Index(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Welcome1!")
+	fmt.Fprintln(w, "Welcome!")
 }
 
 func TodoIndex(w http.ResponseWriter, r *http.Request) {
@@ -22,7 +22,6 @@ func TodoIndex(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(test)
 }
-
 
 func TestApi(w http.ResponseWriter, r *http.Request) {
 	var netClient = &http.Client{

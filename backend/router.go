@@ -1,16 +1,11 @@
 package main
 
-import "github.com/gorilla/mux"
+import (
+	"net/http"
+)
 
-func NewRouter() *mux.Router {
-	router := mux.NewRouter().StrictSlash(true)
+func NewRouter() {
 	for _, route := range routes {
-		router.
-			Methods(route.Method).
-			Path(route.Pattern).
-			Name(route.Name).
-			Handler(route.HandlerFunc)
+		http.HandleFunc(route.Pattern, route.HandlerFunc)
 	}
-
-	return router
 }
