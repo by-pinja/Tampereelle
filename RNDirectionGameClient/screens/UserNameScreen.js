@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Text, TextInput, View } from 'react-native';
-import s from 'styles';
+import { Text, TextInput, View, Button, Alert } from 'react-native';
+import s from "../styles";
 
 export default class UserNameScreen extends Component {
   constructor(props) {

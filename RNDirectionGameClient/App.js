@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from 'react-navigation';
-import {UserNameScreen} from 'UserNameScreen'
+import UserNameScreen from "./screens/UserNameScreen";
 
 
 const RootStack = createStackNavigator({
