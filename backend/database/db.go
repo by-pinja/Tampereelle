@@ -124,7 +124,7 @@ func NextQuestion(gameId uint) Question {
 		place := places[rand.Intn(len(places))]
 
 		question = Question{Place: place, Game: game, State: "OPEN"}
-		db.Save(question)
+		db.Save(&question)
 	}
 
 	return question
