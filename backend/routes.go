@@ -32,13 +32,4 @@ var routes = Routes{
 		"/api/test",
 		TestApi,
 	},
-	Route{
-		Name: "WS",
-		Pattern: "/ws",
-		HandlerFunc: func(w http.ResponseWriter, r *http.Request) {
-			hub := newHub()
-			go hub.run()
-			serveWs(hub, w, r)
-		},
-	},
 }
