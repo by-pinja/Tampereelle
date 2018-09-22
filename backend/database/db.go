@@ -32,9 +32,9 @@ type Player struct {
 
 type Question struct {
 	gorm.Model
-	Place Place  `gorm:"association_foreignkey:PlaceId"`
+	Place Place  `gorm:"foreignkey:PlaceId"`
 	State string
-	Game Game `gorm:"association_foreignkey:GameId"`
+	Game Game `gorm:"foreignkey:GameId"`
 	Answers []Answer
 	GameId uint
 	PlaceId uint
@@ -42,11 +42,13 @@ type Question struct {
 
 type Answer struct {
 	gorm.Model
-	Player Player
-	Question Question
-	Angle float64
+	Player Player `gorm:"foreignkey:PlayerId"`
+	Question Question `gorm:"foreignkey:QuestionId"`
+ 	Angle float64
 	PlayerLatitude float64
 	PlayerLongitude float64
+	PlayerId uint
+	QuestionId uint
 }
 
 func CreateGame() Game {
@@ -124,7 +126,7 @@ func NextQuestion(gameId uint) Question {
 		place := places[rand.Intn(len(places))]
 
 		question = Question{Place: place, Game: game, State: "OPEN"}
-		db.Save(question)
+		db.Save(&question)
 	}
 
 	return question
