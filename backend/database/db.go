@@ -171,7 +171,7 @@ func CreateAnswer(questionId uint, playerId uint, playerLatitude float64, player
 type PlayerScore struct {
 	Player Player `json:"player"`
 	Score float64 `json:"score"`
-	RealAngle float64 `json:"real_angle"`
+	RealAngle float64 `json:"realAngle"`
 }
 
 func dist(dLat float64, dLon float64) float64 {

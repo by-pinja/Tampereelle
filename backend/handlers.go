@@ -40,6 +40,10 @@ type GameState struct {
 	State string `json:"state"`
 }
 
+type PlayerIdDto struct {
+	PlayerId uint `json:"playerId"`
+}
+
 type AnswerDto struct {
 	PlayerID uint `json:"playerID"`
 	Angle float64 `json:"angle"`
@@ -57,6 +61,7 @@ func JoinGame(w http.ResponseWriter, r *http.Request) {
 	database.AddPlayerToGame(player.ID, uint(gameID))
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(PlayerIdDto{PlayerId:player.ID})
 }
 
 func GetGameState(w http.ResponseWriter, r *http.Request) {
