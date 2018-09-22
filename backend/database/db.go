@@ -6,9 +6,6 @@ import (
 	"fmt"
 	"github.com/jinzhu/gorm"
 	"os"
-	"google.golang.org/appengine/log"
-	"google.golang.org/appengine"
-	"net/http"
 )
 
 type SomeTable struct {
@@ -24,7 +21,7 @@ func Init() {
 	db.CreateTable(&SomeTable{})
 }
 
-func getConnection(r *http.Request) *gorm.DB {
+func getConnection() *gorm.DB {
 	db_host := os.Getenv("DB_HOST")
 	db_user := os.Getenv("DB_USER")
 	db_port := os.Getenv("DB_PORT")
