@@ -10,7 +10,7 @@ export default class SelectGameScreen extends Component {
         };
     }
     createGame() {
-        fetch('http://192.168.43.60:8080/api/games', {
+        fetch('https://techdays2018.appspot.com/api/games', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -21,7 +21,7 @@ export default class SelectGameScreen extends Component {
         });
     }
     showGames() {
-        fetch('http://192.168.43.60:8080/api/games/0', {
+        fetch('http://techdays2018.appspot.com/api/games/0', {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
@@ -48,7 +48,9 @@ export default class SelectGameScreen extends Component {
                     <Button title='Liity' style={ s.button } onPress={() => { Alert.alert('Liity peliin', 'Liitytty peliin: ' + this.state.game_id) }}/>
                 </View>
                 <Button title='Luo uusi peli' style={ s.button } onPress={() => { this.createGame() }}/>
-                <Button title='Näytä pelit' style={ s.button } onPress={() => { this.showGames() }}/>
+                <View style={{paddingTop: 10}}>
+                    <Button title='Näytä pelit' style={ s.button } onPress={() => { this.showGames() }}/>
+                </View>
             </View>
         );
     }
