@@ -123,10 +123,17 @@ func NextQuestion(gameId uint) Question {
 	if db.Where(Question{GameId: game.ID, State: "OPEN"}).First(&question).RecordNotFound() {
 		var places []Place
 		db.Find(&places)
-		place := places[rand.Intn(len(places))]
+		place := places[rand.Intn(len(places)-1)]
 
 		question = Question{Place: place, Game: game, State: "OPEN"}
 		db.Save(&question)
+	} else {
+		var place Place;
+		db.Model(&question).Related(&place, "Place").Row()
+		question.Place = place
+		var game Game
+		db.Model(&question).Related(&game, "GameId").Row()
+		question.Game = game
 	}
 
 	return question
