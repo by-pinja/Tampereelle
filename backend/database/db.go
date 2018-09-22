@@ -43,11 +43,23 @@ type Answer struct {
 	PlayerLongitude float64
 }
 
+func CreateGame() Game {
+	db := getConnection()
+	game := Game{State: "PENDING"}
+	db.Create(&game)
+	return game
+}
+
+func GetGame(gameId uint) Game {
+	db := getConnection()
+	var game Game
+	db.First(&game, gameId)
+	return game
+}
 
 func Init() {
 	var db = getConnection()
 	defer db.Close()
-
 	db.AutoMigrate(&Place{}, &Player{}, &Question{}, &Answer{})
 }
 
