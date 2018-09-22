@@ -12,16 +12,16 @@ import (
 
 type Place struct {
 	gorm.Model
-	Name string
-	Latitude float64
-	Longitude float64
+	Name string `json:"name"`
+	Latitude float64 `json:"latitude"`
+	Longitude float64 `json:"longitude"`
 }
 
 type Game struct {
 	gorm.Model
-	State string
-	Players []Player `gorm:"foreignkey:GameId"`
-	Questions []Question `gorm:"foreignkey:GameId"`
+	State string `json:"state"`
+	Players []Player `gorm:"foreignkey:GameId" json:"players"`
+	Questions []Question `gorm:"foreignkey:GameId" json:"questions"`
 }
 
 type Player struct {
@@ -33,22 +33,22 @@ type Player struct {
 type Question struct {
 	gorm.Model
 	Place Place  `gorm:"foreignkey:PlaceId"`
-	State string
+	State string `json:"state"`
 	Game Game `gorm:"foreignkey:GameId"`
-	Answers []Answer
-	GameId uint
-	PlaceId uint
+	Answers []Answer `json:"answers"`
+	GameId uint `json:"gameId"`
+	PlaceId uint `json:"placeId"`
 }
 
 type Answer struct {
 	gorm.Model
 	Player Player `gorm:"foreignkey:PlayerId"`
 	Question Question `gorm:"foreignkey:QuestionId"`
- 	Angle float64
-	PlayerLatitude float64
-	PlayerLongitude float64
-	PlayerId uint
-	QuestionId uint
+ 	Angle float64 `json:"angle"`
+	PlayerLatitude float64 `json:"playerLatitude"`
+	PlayerLongitude float64 `json:"playerLongitude"`
+	PlayerId uint `json:"playerId"`
+	QuestionId uint `json:"questionId"`
 }
 
 func CreateGame() Game {
