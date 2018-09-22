@@ -8,9 +8,10 @@ export default StyleSheet.create({
       backgroundColor: '#7439A2'
     },
     container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
+        padding: 10,
+        backgroundColor: '#FFF',
+        display: 'flex',
+        flex: 1
     },
     h1: {
         fontSize: 24,

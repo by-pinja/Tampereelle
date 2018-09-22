@@ -1,13 +1,16 @@
 import React from 'react';
-import { StatusBar } from 'react-native'
 import { createStackNavigator } from 'react-navigation';
+import LobbyScreen from "./screens/LobbyScreen";
+import AnswerFeedbackScreen from "./screens/AnswerFeedbackScreen";
 import UserNameScreen from "./screens/UserNameScreen";
 import SelectGameScreen from "./screens/SelectGameScreen";
 
 
 const RootStack = createStackNavigator({
   UserNameScreen: UserNameScreen,
-  SelectGameScreen: SelectGameScreen
+  SelectGameScreen: SelectGameScreen,
+  LobbyScreen: LobbyScreen,
+  AnswerFeedbackScreen: AnswerFeedbackScreen
 },
 {
   initialRouteName: 'UserNameScreen',

@@ -33,7 +33,11 @@ func GetGame(w http.ResponseWriter, r *http.Request) {
 }
 
 type PlayerData struct {
-	Name string `json:name`
+	Name string `json:"name"`
+}
+
+type GameState struct {
+	State string `json:"state"`
 }
 
 func JoinGame(w http.ResponseWriter, r *http.Request) {
@@ -42,10 +46,33 @@ func JoinGame(w http.ResponseWriter, r *http.Request) {
 	player := database.CreatePlayer(playerData.Name)
 
 	params := mux.Vars(r)
-	gameId, _ := strconv.ParseUint(params["id"], 10, 64)
-	database.AddPlayerToGame(player.ID, uint(gameId))
+	gameID, _ := strconv.ParseUint(params["id"], 10, 64)
+	database.AddPlayerToGame(player.ID, uint(gameID))
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
+}
+
+func GetGameState(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	gameID, _ := strconv.ParseUint(params["id"], 10, 64)
+	game := database.GetGame(gameID)
+	gameState := GameState{State: game.State}
+	json.NewEncoder(w).Encode(gameState)
+}
+
+func UpdateGameState(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	gameID, _ := strconv.ParseUint(params["id"], 10, 64)
+	var gameState GameState 
+		_ = json.NewDecoder(r.Body).Decode(&gameState);
+	database.UpdateGameState(uint(gameID), gameState.State)
+}
+
+func GetNextQuestion(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	gameID, _ := strconv.ParseUint(params["id"], 10, 64)
+	question := database.NextQuestion(uint(gameID))
+	json.NewEncoder(w).Encode(question)
 }
 
 func Index(w http.ResponseWriter, r *http.Request) {
