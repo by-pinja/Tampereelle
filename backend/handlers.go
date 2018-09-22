@@ -6,10 +6,22 @@ import (
 	"io/ioutil"
 	"net/http"
 	"time"
+	"Tampereelle/backend/database"
 )
 
 type Test struct {
 	Name string
+}
+
+func CreateGame(w http.ResponseWriter, r *http.Request) {
+	game := database.CreateGame();
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(game)
+}
+
+func GetGame(w http.ResponseWriter, r *http.Request) {
+
 }
 
 func Index(w http.ResponseWriter, r *http.Request) {

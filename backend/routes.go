@@ -5,8 +5,6 @@ import (
 )
 
 type Route struct {
-	Name string
-	Method string
 	Pattern string
 	HandlerFunc http.HandlerFunc
 }
@@ -15,20 +13,22 @@ type Routes []Route
 
 var routes = Routes{
 	Route{
-		"Index",
-		"GET",
+		"/api/games",
+		CreateGame,
+	},
+	Route{
+		"/api/games/{id}",
+		GetGame,
+	},
+	Route{
 		"/",
 		Index,
 	},
 	Route{
-		"TodoIndex",
-		"GET",
 		"/test",
 		TodoIndex,
 	},
 	Route{
-		"TestApi",
-		"GET",
 		"/api/test",
 		TestApi,
 	},
