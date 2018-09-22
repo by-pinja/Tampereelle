@@ -1,44 +1,13 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"time"
-	"io/ioutil"
-	"net/http"
 	"google.golang.org/appengine"
+	"log"
+	"net/http"
 )
 
-type Test struct {
-	Name string
-}
-
 func main() {
-
-	http.HandleFunc("/", Index)
-	http.HandleFunc("/test", TodoIndex)
-	http.HandleFunc("/api/test", TestApi)
+	router := NewRouter()
+	log.Fatal(http.ListenAndServe(":8080", router))
 	appengine.Main()
-}
-
-func Index(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Welcome1!")
-}
-
-func TodoIndex(w http.ResponseWriter, r *http.Request) {
-	test := Test{Name: "Test"}
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(test)
-}
-
-func TestApi(w http.ResponseWriter, r *http.Request) {
-	var netClient = &http.Client{
-		Timeout: time.Second * 10,
-	}
-	response, _ := netClient.Get("https://nimiq.mopsus.com/api/quick-stats")
-	data, _ := ioutil.ReadAll(response.Body)
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintln(w, string(data))
 }
