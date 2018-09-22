@@ -68,6 +68,13 @@ func UpdateGameState(w http.ResponseWriter, r *http.Request) {
 	database.UpdateGameState(uint(gameID), gameState.State)
 }
 
+func GetNextQuestion(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	gameID, _ := strconv.ParseUint(params["id"], 10, 64)
+	question := database.NextQuestion(uint(gameID))
+	json.NewEncoder(w).Encode(question)
+}
+
 func Index(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "Welcome!")
 }

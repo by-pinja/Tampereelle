@@ -43,4 +43,9 @@ var routes = Routes{
 		UpdateGameState,
 		"PUT",
 	},
+	Route{
+		"/api/games/{id}/questions/next",
+		GetNextQuestion,
+		"GET",
+	},
 }
