@@ -42,11 +42,13 @@ type Question struct {
 
 type Answer struct {
 	gorm.Model
-	Player Player
-	Question Question
-	Angle float64
+	Player Player `gorm:"foreignkey:PlayerId"`
+	Question Question `gorm:"foreignkey:QuestionId"`
+ 	Angle float64
 	PlayerLatitude float64
 	PlayerLongitude float64
+	PlayerId uint
+	QuestionId uint
 }
 
 func CreateGame() Game {
