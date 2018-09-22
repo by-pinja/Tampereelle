@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Text, TextInput, View, Button, Alert } from 'react-native';
+import UserResponsesList from '../components/UserResponsesList';
 import s from "../styles";
 
 export default class AnswerFeedbackScreen extends Component {
@@ -30,29 +31,16 @@ export default class AnswerFeedbackScreen extends Component {
         }
     });
   }
-    /*renderList(results){
-        {return results.map(result => (
-            <View key={result.player_name}>
-                <Text>{result.player_name}</Text>
-            </View>
-        );}
-    }*/
   render() {
-      const { navigation } = this.props;
-      const player_name = navigation.getParam('player_name', "N/A");
-      const game_id = navigation.getParam('game_id', "N/A");
-      const question_id = navigation.getParam('question_id', "N/A");
       const results = this.state.results;
+      const players = this.results.players;
     return (
       <View style={s.container}>
         <Text style={s.h1}>Vastaukset</Text>
           {results ? (
               <Text>Odotetaan vastauksia...</Text>
           ) : (
-              <View>
-                  {renderList(results)}
-              </View>
-              <Text>Vastaukset tähän</Text>
+              <UserResponsesList players={players}/>
           )}
 
       </View>
