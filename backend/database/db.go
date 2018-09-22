@@ -250,10 +250,10 @@ func GetPlayerScores(questionId uint) []PlayerScore {
 		var answer Answer
 		var playerScore PlayerScore
 		if db.Where(Answer{PlayerId: player.ID}).First(&answer).RecordNotFound() {
+			playerScore = PlayerScore{Player: player, Score: 99999}
+		} else {
 			score, realAngle := getPlayerScore(question, answer)
 			playerScore = PlayerScore{Player: player, Score: score, RealAngle: realAngle}
-		} else {
-			playerScore = PlayerScore{Player: player, Score: 99999}
 		}
 		result = append(result, playerScore)
 	}
