@@ -8,7 +8,7 @@ import (
 func NewRouter() {
 	r := mux.NewRouter()
 	for _, route := range routes {
-		r.HandleFunc(route.Pattern, route.HandlerFunc)
+		r.HandleFunc(route.Pattern, route.HandlerFunc).Methods(route.Method)
 	}
 	http.Handle("/", r)
 }
