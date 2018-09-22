@@ -194,7 +194,7 @@ func GetPlayerScores(questionId uint) []PlayerScore {
 		player := question.Game.Players[i]
 		var answer Answer
 		var playerScore PlayerScore
-		if db.Where(Answer{Player: player}).First(answer).RecordNotFound() {
+		if db.Where(Answer{PlayerId: player.ID}).First(answer).RecordNotFound() {
 			score := getPlayerScore(question, answer)
 			playerScore = PlayerScore{Player: player, Score: score}
 		} else {
