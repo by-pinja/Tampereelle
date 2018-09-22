@@ -3,10 +3,9 @@ package main
 import (
 	"encoding/json"
     "fmt"
-    "log"
     "net/http"
 
-    "github.com/gorilla/mux"
+	"google.golang.org/appengine"
 )
 
 type Test struct {
@@ -15,11 +14,10 @@ type Test struct {
 
 func main() {
 
-    router := mux.NewRouter().StrictSlash(true)
-    router.HandleFunc("/", Index)
-    router.HandleFunc("/test", TodoIndex)
+    http.HandleFunc("/", Index)
+	http.HandleFunc("/test", TodoIndex)
 
-    log.Fatal(http.ListenAndServe(":8080", router))
+	appengine.Main()
 }
 
 func Index(w http.ResponseWriter, r *http.Request) {
