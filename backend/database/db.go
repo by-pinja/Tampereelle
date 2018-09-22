@@ -32,11 +32,12 @@ type Player struct {
 
 type Question struct {
 	gorm.Model
-	Place Place
+	Place Place  `gorm:"association_foreignkey:PlaceId"`
 	State string
-	Game Game
+	Game Game `gorm:"association_foreignkey:GameId"`
 	Answers []Answer
 	GameId uint
+	PlaceId uint
 }
 
 type Answer struct {
@@ -167,7 +168,7 @@ func getPlayerScore(question Question, answer Answer) float64 {
 	dLat := question.Place.Latitude - answer.PlayerLatitude
 	dLon := question.Place.Longitude - answer.PlayerLongitude
 	targetAngle := math.Atan(dLat/dLon)
-	return math.Abs(targetAngle - answer.Angle)
+	return math.Abs(targetAngle)
 }
 
 
