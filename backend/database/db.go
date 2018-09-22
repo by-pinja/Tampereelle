@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/jinzhu/gorm"
 	"os"
+	"math/rand"
 )
 
 type Place struct {
@@ -31,6 +32,7 @@ type Question struct {
 	gorm.Model
 	Place Place
 	State string
+	Game Game
 	Answers []Answer
 }
 
@@ -103,6 +105,28 @@ func GetQuestion(questionId uint) Question {
 	return question
 }
 
+func NextQuestion(gameId uint) Question {
+	db := getConnection()
+	defer db.Close()
+
+	var game Game
+	db.First(&game, gameId)
+
+	var question Question
+	db.Where(Question{Game: game, State: "OPEN"}).First(&question)
+	if db.Where(Question{Game: game, State: "OPEN"}).First(&question).RecordNotFound() {
+		var places []Place
+		db.Find(&places)
+		place := places[rand.Intn(len(places))]
+
+
+		question = Question{Place: place, Game: game, State: "OPEN"}
+		db.Save(question)
+	}
+
+	return question
+}
+
 func GetPlayer(playerId uint) Player {
 	db := getConnection()
 	defer db.Close()
@@ -124,6 +148,11 @@ func CreateAnswer(questionId uint, playerId uint, playerLatitude float64, player
 
 	answer := Answer{Question: question, Player: player, Angle: angle, PlayerLatitude: playerLatitude, PlayerLongitude: playerLongitude}
 	db.Save(&answer)
+
+	if len(question.Answers) == len(question.Game.Players) {
+		question.State = "CLOSED"
+		db.Save(question)
+	}
 }
 
 
