@@ -60,7 +60,7 @@ func GetGame(gameId uint) Game {
 func Init() {
 	var db = getConnection()
 	defer db.Close()
-	db.AutoMigrate(&Place{}, &Player{}, &Question{}, &Answer{})
+	db.AutoMigrate(&Game{}, &Place{}, &Player{}, &Question{}, &Answer{})
 }
 
 func getConnection() *gorm.DB {
