@@ -19,13 +19,14 @@ type Place struct {
 type Game struct {
 	gorm.Model
 	State string
-	Players []Player
-	Questions []Question
+	Players []Player `gorm:"foreignkey:GameId"`
+	Questions []Question `gorm:"foreignkey:GameId"`
 }
 
 type Player struct {
 	gorm.Model
 	Name string
+	GameId uint
 }
 
 type Question struct {
@@ -34,6 +35,7 @@ type Question struct {
 	State string
 	Game Game
 	Answers []Answer
+	GameId uint
 }
 
 type Answer struct {
