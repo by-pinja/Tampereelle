@@ -36,7 +36,7 @@ export default class UserNameScreen extends Component {
     render() {
         return (
           <View style={{padding: 10, backgroundColor: '#FFF', display: 'flex', flex: 1}}>
-            <Text style={s.h1}>Tampereelle {this.state.heading}</Text>
+            <Text style={s.h1}>Tampereelle</Text>
             <View style={{paddingBottom: 10}}>
                 <Text style={s.h2}>Pelaajan nimi:</Text>
                 <TextInput

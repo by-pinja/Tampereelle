@@ -3,7 +3,7 @@ import { Text, TextInput, View, Button, Alert } from 'react-native';
 import s from "../styles";
 import UserList from "../components/UserList";
 
-export default class LobbyScreen extends Component {
+export default class QuestionScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {game: null, starting_game: false};

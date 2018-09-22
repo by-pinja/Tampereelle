@@ -32,7 +32,7 @@ export default class LobbyScreen extends Component {
         }
     });
   }
-  startGame(){
+  startGame(game_id){
       this.setState({starting_game: true});
       fetch('https://techdays2018.appspot.com/api/games/'+game_id +'/state', {
           method: 'PUT',
@@ -47,17 +47,17 @@ export default class LobbyScreen extends Component {
   }
   render() {
       const { navigation } = this.props;
-      const players = this.state.game.players;
+      const players = this.state.game && this.state.game.players ? this.state.game.players : [];
       const game_id = navigation.getParam('game_id', "N/A");
       const game_starting = this.state.starting_game;
     return (
       <View style={s.container}>
-          <Text style={s.h1}>Peli: {{game_id}}</Text>
+          <Text style={s.h1}>Peli: {game_id}</Text>
           <UserList players={players}/>
           <Button style={s.button}
               disabled={game_starting}
               onPress={() => {
-                  this.startGame();
+                  this.startGame(game_id);
               }}
               color='#7439A2'
               title="Aloita peli"
