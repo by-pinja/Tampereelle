@@ -28,4 +28,9 @@ var routes = Routes{
 		JoinGame,
 		"POST",
 	},
+	Route{
+		"/api/games/{id}/state",
+		GetGameState,
+		"GET",
+	},
 }
