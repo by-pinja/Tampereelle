@@ -32,9 +32,9 @@ type Player struct {
 
 type Question struct {
 	gorm.Model
-	Place Place  `gorm:"association_foreignkey:PlaceId"`
+	Place Place  `gorm:"foreignkey:ID;association_foreignkey:PlaceId"`
 	State string
-	Game Game `gorm:"association_foreignkey:GameId"`
+	Game Game `gorm:"foreignkey:ID;association_foreignkey:GameId"`
 	Answers []Answer
 	GameId uint
 	PlaceId uint
