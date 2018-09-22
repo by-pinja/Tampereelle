@@ -55,7 +55,7 @@ var routes = Routes{
 	},
 	Route{
 		"/api/games/{id}/questions/{questionID}",
-		GetQuestion,
+		GetQuestionResult,
 		"GET",
 	},
 }

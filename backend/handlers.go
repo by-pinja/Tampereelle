@@ -92,11 +92,11 @@ func GetNextQuestion(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(question)
 }
 
-func GetQuestion(w http.ResponseWriter, r *http.Request) {
+func GetQuestionResult(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	questionID, _ := strconv.ParseUint(params["questionID"], 10, 64)
-	question := database.GetQuestion(uint(questionID))
-	json.NewEncoder(w).Encode(question)
+	scores := database.GetPlayerScores(uint(questionID))
+	json.NewEncoder(w).Encode(scores)
 }
 
 func Index(w http.ResponseWriter, r *http.Request) {
