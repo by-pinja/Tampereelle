@@ -25,12 +25,27 @@ func CreateGame(w http.ResponseWriter, r *http.Request) {
 
 func GetGame(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	id, _ := strconv.ParseUint(params["id"], 10, 64)
+	gameId, _ := strconv.ParseUint(params["id"], 10, 64)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
-	game := database.GetGame(id)
+	game := database.GetGame(gameId)
 	json.NewEncoder(w).Encode(game)
+}
 
+type PlayerData struct {
+	Name string `json:name`
+}
+
+func JoinGame(w http.ResponseWriter, r *http.Request) {
+	var playerData PlayerData 
+		_ = json.NewDecoder(r.Body).Decode(&playerData);
+	player := database.CreatePlayer(playerData.Name)
+
+	params := mux.Vars(r)
+	gameId, _ := strconv.ParseUint(params["id"], 10, 64)
+	database.AddPlayerToGame(player.ID, uint(gameId))
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
 }
 
 func Index(w http.ResponseWriter, r *http.Request) {

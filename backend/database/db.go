@@ -68,7 +68,7 @@ func UpdateGameState(gameId uint, state string) {
 	var game Game
 	db.First(&game, gameId)
 	game.State = state
-	db.Save(game)
+	db.Save(&game)
 }
 
 func CreatePlayer(playerName string) Player {
@@ -76,7 +76,7 @@ func CreatePlayer(playerName string) Player {
 	defer db.Close()
 
 	player := Player{Name: playerName}
-	db.Save(player)
+	db.Save(&player)
 	return player
 }
 
@@ -91,7 +91,7 @@ func AddPlayerToGame(playerId uint, gameId uint) {
 	db.First(&player, playerId)
 	players := append(game.Players, player)
 	game.Players = players
-	db.Save(game)
+	db.Save(&game)
 }
 
 func GetQuestion(questionId uint) Question {
@@ -123,7 +123,7 @@ func CreateAnswer(questionId uint, playerId uint, playerLatitude float64, player
 	db.First(&player, playerId)
 
 	answer := Answer{Question: question, Player: player, Angle: angle, PlayerLatitude: playerLatitude, PlayerLongitude: playerLongitude}
-	db.Save(answer)
+	db.Save(&answer)
 }
 
 
