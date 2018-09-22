@@ -161,7 +161,16 @@ func CreateAnswer(questionId uint, playerId uint, playerLatitude float64, player
 	answer := Answer{Question: question, Player: player, Angle: angle, PlayerLatitude: playerLatitude, PlayerLongitude: playerLongitude}
 	db.Save(&answer)
 
-	if len(question.Answers) == len(question.Game.Players) {
+	var answers []Answer
+	db.Model(&question).Related(&answers, "QuestionId").Rows()
+
+	var game Game
+	db.Model(&question).Related(&game, "GameId").Row()
+
+	var players []Player
+	db.Model(&game).Related(&players, "GameId").Rows()
+
+	if len(answers) == len(players) {
 		question.State = "CLOSED"
 		db.Save(question)
 	}
