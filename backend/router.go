@@ -1,11 +1,14 @@
 package main
 
 import (
+	"github.com/gorilla/mux"
 	"net/http"
 )
 
 func NewRouter() {
+	r := mux.NewRouter()
 	for _, route := range routes {
-		http.HandleFunc(route.Pattern, route.HandlerFunc)
+		r.HandleFunc(route.Pattern, route.HandlerFunc).Methods(route.Method)
 	}
+	http.Handle("/", r)
 }

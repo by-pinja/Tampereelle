@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/jinzhu/gorm"
 	"os"
+	"math/rand"
 )
 
 type Place struct {
@@ -18,20 +19,23 @@ type Place struct {
 type Game struct {
 	gorm.Model
 	State string
-	Players []Player
-	Questions []Question
+	Players []Player `gorm:"foreignkey:GameId"`
+	Questions []Question `gorm:"foreignkey:GameId"`
 }
 
 type Player struct {
 	gorm.Model
 	Name string
+	GameId uint
 }
 
 type Question struct {
 	gorm.Model
 	Place Place
 	State string
+	Game Game
 	Answers []Answer
+	GameId uint
 }
 
 type Answer struct {
@@ -45,17 +49,115 @@ type Answer struct {
 
 func CreateGame() Game {
 	db := getConnection()
+	defer db.Close()
+
 	game := Game{State: "PENDING"}
 	db.Create(&game)
 	return game
 }
 
-func GetGame(gameId uint) Game {
+func GetGame(gameId uint64) Game {
 	db := getConnection()
+	defer db.Close()
+
 	var game Game
 	db.First(&game, gameId)
 	return game
 }
+
+func UpdateGameState(gameId uint, state string) {
+	db := getConnection()
+	defer db.Close()
+
+	var game Game
+	db.First(&game, gameId)
+	game.State = state
+	db.Save(&game)
+}
+
+func CreatePlayer(playerName string) Player {
+	db := getConnection()
+	defer db.Close()
+
+	player := Player{Name: playerName}
+	db.Save(&player)
+	return player
+}
+
+func AddPlayerToGame(playerId uint, gameId uint) {
+	db := getConnection()
+	defer db.Close()
+
+	var game Game
+	db.First(&game, gameId)
+
+	var player Player
+	db.First(&player, playerId)
+	players := append(game.Players, player)
+	game.Players = players
+	db.Save(&game)
+}
+
+func GetQuestion(questionId uint) Question {
+	db := getConnection()
+	defer db.Close()
+
+	var question Question
+	db.First(&question, questionId)
+	return question
+}
+
+func NextQuestion(gameId uint) Question {
+	db := getConnection()
+	defer db.Close()
+
+	var game Game
+	db.First(&game, gameId)
+
+	var question Question
+	db.Where(Question{Game: game, State: "OPEN"}).First(&question)
+	if db.Where(Question{Game: game, State: "OPEN"}).First(&question).RecordNotFound() {
+		var places []Place
+		db.Find(&places)
+		place := places[rand.Intn(len(places))]
+
+
+		question = Question{Place: place, Game: game, State: "OPEN"}
+		db.Save(question)
+	}
+
+	return question
+}
+
+func GetPlayer(playerId uint) Player {
+	db := getConnection()
+	defer db.Close()
+
+	var player Player
+	db.First(&player, playerId)
+	return player
+}
+
+func CreateAnswer(questionId uint, playerId uint, playerLatitude float64, playerLongitude float64, angle float64) {
+	db := getConnection()
+	defer db.Close()
+
+	var question Question
+	db.First(&question, questionId)
+
+	var player Player
+	db.First(&player, playerId)
+
+	answer := Answer{Question: question, Player: player, Angle: angle, PlayerLatitude: playerLatitude, PlayerLongitude: playerLongitude}
+	db.Save(&answer)
+
+	if len(question.Answers) == len(question.Game.Players) {
+		question.State = "CLOSED"
+		db.Save(question)
+	}
+}
+
+
 
 func Init() {
 	var db = getConnection()
