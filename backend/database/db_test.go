@@ -11,6 +11,7 @@ func question(latitude float64, longitude float64) Question {
 }
 
 
+/*
 func TestScoreCalculation1(t *testing.T) {
 	q := question(90.0, 90.0)
 	a := Answer{PlayerLatitude: 0.0, PlayerLongitude: 0.0, Angle: 0}
@@ -28,5 +29,27 @@ func TestScoreCalculation2(t *testing.T) {
 	if score != math.Pi / 2 {
 		t.Error(score)
 	}
+} */
+
+
+func TestToDeg1(t *testing.T) {
+	result := toDeg(math.Pi)
+	if result != 270 {
+		t.Error(result)
+	}
 }
 
+
+func TestToDeg2(t *testing.T) {
+	result := toDeg((3 * math.Pi) / 2)
+	if result != 180 {
+		t.Error(result)
+	}
+}
+
+func TestToDeg3(t *testing.T) {
+	result := toDeg(math.Pi / 2)
+	if result != 0 {
+		t.Error(result)
+	}
+}

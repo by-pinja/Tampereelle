@@ -164,6 +164,7 @@ func CreateAnswer(questionId uint, playerId uint, playerLatitude float64, player
 type PlayerScore struct {
 	Player Player `json:"player"`
 	Score float64 `json:"score"`
+	RealAngle float64 `json:"real_angle"`
 }
 
 func dist(dLat float64, dLon float64) float64 {
@@ -177,7 +178,7 @@ func angle(x1 float64, x2 float64, y1 float64, y2 float64) float64 {
 
 }
 
-func getPlayerScore(question Question, answer Answer) float64 {
+func getPlayerScore(question Question, answer Answer) (float64, float64) {
 	realDLat := question.Place.Latitude - answer.PlayerLatitude
 	realDLon := question.Place.Longitude - answer.PlayerLongitude
 
@@ -196,7 +197,16 @@ func getPlayerScore(question Question, answer Answer) float64 {
 	ansDLat := math.Sin(ansRad)
 	ansDLon := math.Cos(ansRad)
 
-	return angle(realDLat, ansDLat, realDLon, ansDLon)
+	return angle(realDLat, ansDLat, realDLon, ansDLon), toDeg(realAngle)
+}
+
+func toDeg(angleRad float64) float64 {
+	deg := angleRad / (2 * math.Pi) * 360.0
+	deg = deg - 90
+	if deg < 0 {
+		deg = 360 - math.Abs(deg)
+	}
+	return 360 - deg
 }
 
 func GetPlayerScores(questionId uint) []PlayerScore {
@@ -224,8 +234,8 @@ func GetPlayerScores(questionId uint) []PlayerScore {
 		var answer Answer
 		var playerScore PlayerScore
 		if db.Where(Answer{PlayerId: player.ID}).First(&answer).RecordNotFound() {
-			score := getPlayerScore(question, answer)
-			playerScore = PlayerScore{Player: player, Score: score}
+			score, realAngle := getPlayerScore(question, answer)
+			playerScore = PlayerScore{Player: player, Score: score, RealAngle: realAngle}
 		} else {
 			playerScore = PlayerScore{Player: player, Score: 99999}
 		}
