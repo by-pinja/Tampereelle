@@ -48,4 +48,14 @@ var routes = Routes{
 		GetNextQuestion,
 		"GET",
 	},
+	Route{
+		"/api/games/{id}/questions/{questionID}/answers",
+		AnswerQuestion,
+		"POST",
+	},
+	Route{
+		"/api/games/{id}/questions/{questionID}",
+		GetQuestion,
+		"GET",
+	},
 }
