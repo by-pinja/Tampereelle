@@ -7,7 +7,8 @@ import SelectGameScreen from "./screens/SelectGameScreen";
 
 const RootStack = createStackNavigator({
   UserNameScreen: UserNameScreen,
-  SelectGameScreen: SelectGameScreen
+  SelectGameScreen: SelectGameScreen,
+  AnswerFeedbackScreen: AnswerFeedbackScreen
 },
 {
   initialRouteName: 'UserNameScreen',
