@@ -33,4 +33,14 @@ var routes = Routes{
 		GetGameState,
 		"GET",
 	},
+	Route{
+		"/api/games/{id}/state",
+		GetGameState,
+		"GET",
+	},
+	Route{
+		"/api/games/{id}/state",
+		UpdateGameState,
+		"PUT",
+	},
 }
