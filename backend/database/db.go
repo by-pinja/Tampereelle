@@ -26,8 +26,8 @@ type Game struct {
 
 type Player struct {
 	gorm.Model
-	Name string
-	GameId uint
+	Name string `json:"name"`
+	GameId uint `json:"gameId"`
 }
 
 type Question struct {
@@ -162,8 +162,8 @@ func CreateAnswer(questionId uint, playerId uint, playerLatitude float64, player
 
 
 type PlayerScore struct {
-	Player Player
-	Score float64
+	Player Player `json:"player"`
+	Score float64 `json:"score"`
 }
 
 func getPlayerScore(question Question, answer Answer) float64 {
