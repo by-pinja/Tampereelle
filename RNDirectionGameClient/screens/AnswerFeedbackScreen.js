@@ -11,11 +11,12 @@ export default class AnswerFeedbackScreen extends Component {
     componentDidMount() {
         const question_id = this.props.navigation.getParam('question_id', "N/A");
         const game_id = this.props.navigation.getParam('game_id', "N/A");
-        this.timer = setInterval(()=> this.getResults(game_id, question_id), 1000);
+        const player_name = this.props.navigation.getParam('player_name', "N/A");
+        this.timer = setInterval(()=> {this.getResults(game_id, question_id); console.log("polling2") }, 5000);
     }
 
     componentWillUnmount() {
-        this.timer = null;
+        clearInterval(this.timer);
     }
   getResults(game_id, question_id ) {
     fetch('https://techdays2018.appspot.com/api/games/'+game_id +'/questions/'+question_id, {
@@ -25,22 +26,24 @@ export default class AnswerFeedbackScreen extends Component {
             'Content-Type': 'application/json'
         }
     }).then((response) => response.json()).then((responseJson) => {
-        if(responseJson.answer){
-            this.timer = null;
+        if(responseJson != null && responseJson.length){
+            clearInterval(this.timer);
             this.setState({results: responseJson});
         }
     });
   }
   render() {
       const results = this.state.results;
-      const players = this.results.players;
     return (
       <View style={s.container}>
         <Text style={s.h1}>Vastaukset</Text>
           {results ? (
-              <Text>Odotetaan vastauksia...</Text>
+              <View>
+                  <Text style={s.h2}>Pelaajat:</Text>
+                  <UserResponsesList players={results}/>
+              </View>
           ) : (
-              <UserResponsesList players={players}/>
+              <Text>Odotetaan vastauksia...</Text>
           )}
 
       </View>

@@ -10,11 +10,12 @@ export default class LobbyScreen extends Component {
   }
     componentDidMount() {
         const game_id = this.props.navigation.getParam('game_id', "N/A");
-        //this.timer = setInterval(()=> this.getGame(game_id), 2000);
+        this.timer = setInterval(()=> { this.getGame(game_id); } , 5000);
     }
 
+
     componentWillUnmount() {
-        this.timer = null;
+        clearInterval(this.timer);
     }
   getGame(game_id) {
     fetch('https://techdays2018.appspot.com/api/games/'+game_id, {
@@ -25,7 +26,8 @@ export default class LobbyScreen extends Component {
         }
     }).then((response) => response.json()).then((responseJson) => {
         if(responseJson.state && responseJson.state === "STARTED"){
-            this.props.navigation.navigate("QuestionScreen", {game_id: game_id, player_name: this.props.navigation.getParam('player_name', "N/A")});
+            clearInterval(this.timer);
+            this.props.navigation.navigate("QuestionScreen", {game_id: game_id, player_name: this.props.navigation.getParam('player_name', "N/A"), player_id: this.props.navigation.getParam("player_id")});
         }
         else{
             this.setState({game: responseJson})
@@ -44,11 +46,6 @@ export default class LobbyScreen extends Component {
               Accept: 'application/json',
               'Content-Type': 'application/json'
           }
-      }).then((response) => {
-          this.props.navigation.navigate("QuestionScreen", {
-              game_id: game_id,
-              player_name: player_name
-          });
       });
   }
   render() {
@@ -59,7 +56,10 @@ export default class LobbyScreen extends Component {
     return (
       <View style={s.container}>
           <Text style={s.h1}>Peli: {game_id}</Text>
-          <UserList players={players}/>
+          <Text style={s.h2}>Pelaajat: </Text>
+          { players ?
+              (<UserList players={players}/> ) : (<Text>No players</Text>)
+          }
           <Button style={s.button}
               disabled={game_starting}
               onPress={() => {

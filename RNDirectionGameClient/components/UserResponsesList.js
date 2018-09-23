@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View, Text, FlatList} from 'react-native';
 
 export default class UserResponsesList extends Component {
     render() {
@@ -8,7 +8,8 @@ export default class UserResponsesList extends Component {
             <View style={styles.container}>
                 <FlatList
                     data={players}
-                    renderItem={({item}) => <View key={item.player_name}><Text style={styles.item}>{item.player_name}</Text><Text>{item.score}</Text></View>}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({item}) =><Text style={styles.item}>{item.player.name}: {Math.round(item.score * 100) / 100} Kulma: {Math.round(item.realAngle * 100) / 100}</Text>}
                 />
             </View>
         );

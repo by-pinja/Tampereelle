@@ -45,10 +45,11 @@ export default class SelectGameScreen extends Component {
                     Accept: 'application/json',
                     'Content-Type': 'application/json'
                 }
-            }).then(() => {
+            }).then((response) => response.json()).then((responseJson) => {
                 this.props.navigation.navigate("LobbyScreen", {
                     game_id: id,
-                    player_name: name
+                    player_name: name,
+                    player_id: responseJson.playerId
                 });
             });
         }
