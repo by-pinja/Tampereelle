@@ -9,6 +9,7 @@ import (
 	"math/rand"
 	"math"
 	"time"
+	"sync"
 )
 
 type Place struct {
@@ -144,6 +145,10 @@ func NextQuestion(gameId uint) Question {
 	var game Game
 	db.First(&game, gameId)
 
+	l := sync.Mutex{}
+
+	l.Lock()
+	defer l.Unlock()
 	var question Question
 	db.Where(Question{GameId: game.ID, State: "OPEN"}).First(&question)
 	if db.Where(Question{GameId: game.ID, State: "OPEN"}).First(&question).RecordNotFound() {
@@ -192,7 +197,14 @@ func CreateAnswer(questionId uint, playerId uint, playerLatitude float64, player
 	var player Player
 	db.First(&player, playerId)
 
-	answer := Answer{Question: question, Player: player, Angle: angle, PlayerLatitude: playerLatitude, PlayerLongitude: playerLongitude}
+	var answer Answer
+	if db.Where(Answer{QuestionId: questionId, PlayerId:playerId}).First(&answer).RecordNotFound() {
+		answer = Answer{Question: question, Player: player, Angle: angle, PlayerLatitude: playerLatitude, PlayerLongitude: playerLongitude}
+	} else {
+		answer.Angle = angle
+		answer.PlayerLatitude = playerLatitude
+		answer.PlayerLongitude = playerLongitude
+	}
 	db.Save(&answer)
 
 	var answers []Answer
@@ -326,8 +338,8 @@ func getConnection() *gorm.DB {
 	}
 
 	db, err := gorm.Open("postgres", params)
-	db.DB().SetMaxOpenConns(4)
-	db.DB().SetMaxIdleConns(2)
+	db.DB().SetMaxOpenConns(8)
+	db.DB().SetMaxIdleConns(4)
 	if err != nil {
 	}
 	return db
