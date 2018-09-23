@@ -8,6 +8,7 @@ import (
 	"os"
 	"math/rand"
 	"math"
+	"time"
 )
 
 type Place struct {
@@ -114,6 +115,28 @@ func GetQuestion(questionId uint) Question {
 	return question
 }
 
+func lastAnswerTime(db *gorm.DB, game Game) *time.Time {
+
+	var lastTime *time.Time
+
+	var questions []Question
+	db.Model(&game).Related(&questions, "GameId").Rows()
+	for i := 0; i<len(questions); i++ {
+		var answers []Answer
+		question := questions[i]
+		db.Model(&question).Related(&answers, "QuestionId").Rows()
+		for j := 0; j<len(answers); j++ {
+			answer := answers[j]
+			if lastTime == nil || answer.CreatedAt.After(*lastTime) {
+				lastTime = &answer.CreatedAt
+			}
+		}
+	}
+
+	return lastTime
+}
+
+
 func NextQuestion(gameId uint) Question {
 	db := getConnection()
 	defer db.Close()
@@ -124,6 +147,14 @@ func NextQuestion(gameId uint) Question {
 	var question Question
 	db.Where(Question{GameId: game.ID, State: "OPEN"}).First(&question)
 	if db.Where(Question{GameId: game.ID, State: "OPEN"}).First(&question).RecordNotFound() {
+		lastAnswerTime := lastAnswerTime(db, game)
+		if lastAnswerTime != nil {
+			durationAfterLast := time.Since(*lastAnswerTime)
+			if durationAfterLast.Seconds() < 5 {
+				return Question{}
+			}
+		}
+
 		var places []Place
 		db.Find(&places)
 		place := places[rand.Intn(len(places)-1)]
@@ -202,7 +233,6 @@ func getPlayerScore(question Question, answer Answer) (float64, float64) {
 	realDLon := question.Place.Longitude - answer.PlayerLongitude
 
 	realAngle := angle(realDLon, 1.0, realDLat, 0)
-	fmt.Println(realAngle)
 
 	ansRotated := answer.Angle + 90
 	if ansRotated > 360 {
@@ -210,13 +240,13 @@ func getPlayerScore(question Question, answer Answer) (float64, float64) {
 	}
 	ansRotated = 360 - ansRotated
 	ansRad := ((ansRotated) / 360.0) * 2 * math.Pi
-	fmt.Println(answer.Angle)
-	fmt.Println(ansRad)
 
 	ansDLat := math.Sin(ansRad)
 	ansDLon := math.Cos(ansRad)
 
-	return angle(realDLat, ansDLat, realDLon, ansDLon), toDeg(realAngle)
+	angleDiff := angle(realDLat, ansDLat, realDLon, ansDLon)
+
+	return ((math.Pi - angleDiff) / math.Pi) * 100.0, toDeg(realAngle)
 }
 
 func toDeg(angleRad float64) float64 {
@@ -253,7 +283,7 @@ func GetPlayerScores(questionId uint) []PlayerScore {
 		var answer Answer
 		var playerScore PlayerScore
 		if db.Where(Answer{PlayerId: player.ID}).First(&answer).RecordNotFound() {
-			playerScore = PlayerScore{Player: player, Score: 99999}
+			playerScore = PlayerScore{Player: player, Score: 0}
 		} else {
 			score, realAngle := getPlayerScore(question, answer)
 			playerScore = PlayerScore{Player: player, Score: score, RealAngle: realAngle}
@@ -296,6 +326,8 @@ func getConnection() *gorm.DB {
 	}
 
 	db, err := gorm.Open("postgres", params)
+	db.DB().SetMaxOpenConns(4)
+	db.DB().SetMaxIdleConns(2)
 	if err != nil {
 	}
 	return db
