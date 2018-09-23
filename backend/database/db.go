@@ -66,6 +66,9 @@ func GetGame(gameId uint64) Game {
 
 	var game Game
 	db.First(&game, gameId)
+	var players []Player;
+	db.Model(&game).Related(&players, "Players").Rows()
+	game.Players = players
 	return game
 }
 
@@ -161,7 +164,16 @@ func CreateAnswer(questionId uint, playerId uint, playerLatitude float64, player
 	answer := Answer{Question: question, Player: player, Angle: angle, PlayerLatitude: playerLatitude, PlayerLongitude: playerLongitude}
 	db.Save(&answer)
 
-	if len(question.Answers) == len(question.Game.Players) {
+	var answers []Answer
+	db.Model(&question).Related(&answers, "QuestionId").Rows()
+
+	var game Game
+	db.Model(&question).Related(&game, "GameId").Row()
+
+	var players []Player
+	db.Model(&game).Related(&players, "GameId").Rows()
+
+	if len(answers) == len(players) {
 		question.State = "CLOSED"
 		db.Save(question)
 	}
@@ -241,10 +253,10 @@ func GetPlayerScores(questionId uint) []PlayerScore {
 		var answer Answer
 		var playerScore PlayerScore
 		if db.Where(Answer{PlayerId: player.ID}).First(&answer).RecordNotFound() {
+			playerScore = PlayerScore{Player: player, Score: 99999}
+		} else {
 			score, realAngle := getPlayerScore(question, answer)
 			playerScore = PlayerScore{Player: player, Score: score, RealAngle: realAngle}
-		} else {
-			playerScore = PlayerScore{Player: player, Score: 99999}
 		}
 		result = append(result, playerScore)
 	}
